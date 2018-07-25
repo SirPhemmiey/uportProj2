@@ -17,6 +17,7 @@ contract TaskHelper {
 
     //events
     event TaskCreated(uint indexed id, address indexed parent);
+	event DoingTask(uint indexed id, address indexed childDoing);
     
     /** @notice Checks if a child (address) is associated to a particular parent (address).
       * @param parent address of the parent.

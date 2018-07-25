@@ -20,7 +20,7 @@ class AddChildren extends Component{
         if(!web3.utils.isAddress(_addr)) {
             alert("the address entered is invalid. Please try again!");
         } else {
-            await this.props.contractInstance.methods.addChildren(_addr).send((err,transactionHash) => {
+            await this.props.contractInstance.methods.addChildren(_addr).send(/*this.props.person*/(err,transactionHash) => {
                 if(err){
                     console.log(err);
                     alert("It seems like you are trying to add an address that you have already added!");

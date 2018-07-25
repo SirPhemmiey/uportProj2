@@ -15,27 +15,17 @@ class ViewTask extends Component{
             showError: false
         }
 
-        this.handleTasksDelegated = this.handleTasksDelegated.bind(this);
+        this.handleSubmitTaskId = this.handleSubmitTaskId.bind(this);
         this.getTaskDetails = this.getTaskDetails.bind(this);
     }
 
-    async handleTasksDelegated() { 
-        
-		this.props.contractInstance.events.TaskCreated({
-			filter: {parent: web3.eth.accounts[0]}, fromBlock: 0, toBlock:'latest'}, (err, res) => {
-				console.log(JSON.stringify(res.returnValues));
-				let id = res.returnValues.id;
-				document.writeln("Task ID: " + id);
-				//get Task Details - child Doing, completed ya nahi, ipfs details. if completed - tell to verify!
-		})
-		
-		
-        const {getLatestTaskId} = this.props.contractInstance;
-        getLatestTaskId((err, id) => {
+    async handleSubmitTaskId(e) {
+        e.preventDefault(); 
+        this.props.contractInstance.methods.getLatestTaskId().call((err, id) => {
             console.log(id);
             id = id.toNumber();            
             let _id = document.querySelector('input[name=task_id]').value;
-//don't allow checking for invalid task ids!
+			//don't allow checking for invalid task ids!
             if (_id<0 || _id>id){
                 this.setState({
                     showError: true,
@@ -49,13 +39,10 @@ class ViewTask extends Component{
                 this.getTaskDetails(_id);
             } //else
         });
-        
     }
 
-    async getTaskDetails(_id) {
-        const {getCorrespondingTask} = this.props.contractInstance;        
-        await getCorrespondingTask(_id, (err, result) => {
-            
+    async getTaskDetails(_id) {       
+        await this.props.contractInstance.methods.getCorrespondingTask(_id).call((err, result) => {            
             ipfs.cat(result[0], (err,buffer) => {
                 let temp = JSON.parse(buffer.toString()); 
                 console.log(temp);
@@ -69,21 +56,7 @@ class ViewTask extends Component{
         })//getCorrespondingTask()                   
     }
 
-	render() { 
-        return (
-          <div id="viewTask" className="ViewTask">
-            <hr />
-            <h2> Tasks Delegated by you </h2>
-			<p><strong>NOTE: </strong>Only the tasks that have not been completed will be shown here. To see the completed tasks please go to the respective section.</p>
-            <button onClick={this.handleTasksDelegated} > Get Tasks Delegated </button>
-          </div>
-        );
-    }
-}
-
-export default ViewTask;
-
-/*
+	render() {    
         let table;
         if(this.state.showTaskId) {
           table = <div>
@@ -122,4 +95,20 @@ export default ViewTask;
         if(this.state.showError) {
           error = <p>You may have entered either an invalid task id. Try again!</p>;
         }
-        */
+    
+        return (
+          <div id="viewTask" className="ViewTask">
+            <hr />
+            <h2> Get task information by entering a task id </h2>
+            <form  onSubmit = { this.handleSubmitTaskId }>
+              <input type="text" placeholder="enter task id" name="task_id"/>
+              <input type="submit" />
+            </form>
+    
+            {table}
+            {error}
+          </div>
+        );
+    }
+}
+export default ViewTask;

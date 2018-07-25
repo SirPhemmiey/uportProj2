@@ -49,6 +49,7 @@ contract TaskManager is TaskHelper {
         require(task.childDoing==0x0000000000000000000000000000000000000000);
         task.childDoing = msg.sender;
         idToTask[_taskId] = task;
+		emit DoingTask(_taskId,msg.sender);
     }
 	
 	/** @dev set task as completed, provided msg.sender was doing the task

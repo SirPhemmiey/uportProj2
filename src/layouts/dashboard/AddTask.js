@@ -41,9 +41,7 @@ class AddTask extends Component{
         await ipfs.add(buf, (err,files) => { 
             let _ipfsHash = files[0].hash;
             
-            //add the ipfsHash to ethereum!
-            //const {addTask} = this.props.contractInstance;
-            this.props.contractInstance.methods.addTask(_ipfsHash).send((err, transHash) => {
+            this.props.contractInstance.methods.addTask(_ipfsHash).send(/*this.props.person*/(err, transHash) => {
                 this.setState({
                     transactionHash: transHash,
                     ipfsHash: _ipfsHash //would it change on simultaneous add???

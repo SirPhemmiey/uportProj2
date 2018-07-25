@@ -2,17 +2,16 @@ import React, { Component } from 'react';
 import web3 from '../../util/web3v1';
 import contractInstance from '../../util/contractSetup'
 import decodeAddr from '../../util/decodeMNIDAddr'
-import AddChildren from './addChildren'
+import AddChildren from './AddChildren'
 import AddTask from './AddTask'
+import ShowTask from './ShowTask';
 import ViewTask from './ViewTask';
 
 class Dashboard extends Component {
   constructor(props, { authData }) {
     super(props)
     authData = this.props  
-    this.state = {
-      person: ""
-    }
+    this.state = { person: "" }
   }
 
   componentWillMount() {
@@ -29,9 +28,10 @@ class Dashboard extends Component {
           <div className="pure-u-1-1">
             <h1>Dashboard</h1>
             <p><strong>Hi {this.props.authData.name}!</strong></p>
-            <ViewTask contractInstance= {contractInstance} person={this.state.person}/>
-            <AddChildren contractInstance= {contractInstance} /> 
-            <AddTask contractInstance= {contractInstance}/>               
+            <ShowTask contractInstance= {contractInstance} person={this.state.person}/>
+            <AddChildren contractInstance= {contractInstance} person={this.state.person}/> 
+            <AddTask contractInstance= {contractInstance}/>
+			<ViewTask contractInstance= {contractInstance} person={this.state.person}/>
           </div>
         </div>
       </main>
